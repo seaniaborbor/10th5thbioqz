@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WASSCE Biology Quiz</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .quiz-container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 30px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        .option {
+            padding: 12px 20px;
+            margin-bottom: 10px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .correct {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+        .incorrect {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="quiz-container">
+            <div class="alert alert-primary text-center mb-4">
+                <h1 class="text-center mb-4">10<sup>th</sup> Grade 5<sup>th</sup> Biology Self Test </h1>
+            <h4>Plant Like Animals & Fungi</h4>
+
+            </div>
+          
+            <div id="quiz-content">
+                <div class="question" id="question"></div>
+                <div class="options" id="options"></div>
+                <div class="mt-3" id="explanation"></div>
+            </div>
+            
+            <div class="d-flex justify-content-between mt-4">
+                <button class="btn btn-secondary" id="prev-btn" disabled>Previous</button>
+                <button class="btn btn-primary" id="next-btn">Next</button>
+            </div>
+            <hr>
+            <div class="d-flex justify-content-center gap-3 bg-light shadow-sm p-5 mt-4">
+                <a href="https://github.com/seaniaborbor" class="btn btn-dark" target="_blank">
+                    GitHub
+                </a>
+                <a href="https://web.facebook.com/tarnue.borbor" class="btn btn-primary" target="_blank">
+                    Facebook
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Quiz questions
+const questions = [
+    {
+        question: "Which of the following is NOT a characteristic of algae?",
+        options: [
+            "Presence of chlorophyll",
+            "Lack of true roots, stems, and leaves",
+            "Ability to photosynthesize",
+            "Presence of vascular tissue"
+        ],
+        answer: 3,
+        explanation: "Algae lack vascular tissue (xylem and phloem), which is found in higher plants like ferns."
+    },
+    {
+        question: "The symbiotic relationship between fungi and algae is called:",
+        options: [
+            "Mycorrhizae",
+            "Lichen",
+            "Saprophytism",
+            "Parasitism"
+        ],
+        answer: 1,
+        explanation: "Lichens represent a mutualistic relationship between fungi and algae/cyanobacteria."
+    },
+    {
+        question: "In mosses, water is absorbed mainly through:",
+        options: [
+            "Roots",
+            "Rhizoids",
+            "Stomata",
+            "Vascular tissue"
+        ],
+        answer: 1,
+        explanation: "Mosses have rhizoids (hair-like structures) for anchorage and absorption, not true roots."
+    },
+    {
+        question: "Which of these fungal diseases affects humans?",
+        options: [
+            "Blight",
+            "Athlete's foot",
+            "Rust",
+            "Smut"
+        ],
+        answer: 1,
+        explanation: "Athlete's foot (Tinea pedis) is a common fungal infection in humans."
+    },
+    {
+        question: "The oxygen released during photosynthesis comes from:",
+        options: [
+            "Carbon dioxide",
+            "Water",
+            "Glucose",
+            "Chlorophyll"
+        ],
+        answer: 1,
+        explanation: "Photolysis of water molecules during the light-dependent reactions produces oxygen."
+    },
+    {
+        question: "Which structure produces spores in ferns?",
+        options: [
+            "Flower",
+            "Sori",
+            "Rhizome",
+            "Gametophyte"
+        ],
+        answer: 1,
+        explanation: "Ferns produce spores in clusters called sori on the underside of their fronds."
+    },
+    {
+        question: "Fungi differ from plants because they:",
+        options: [
+            "Are photosynthetic",
+            "Have cell walls made of cellulose",
+            "Are heterotrophic",
+            "Reproduce by seeds"
+        ],
+        answer: 2,
+        explanation: "Fungi are heterotrophic (cannot make their own food) and have chitin in their cell walls."
+    },
+    {
+        question: "Which of these is an economic importance of algae?",
+        options: [
+            "Source of antibiotics",
+            "Production of agar",
+            "Causing malaria",
+            "Decomposing wood"
+        ],
+        answer: 1,
+        explanation: "Algae are used to produce agar, a gelatinous substance used in food and microbiology."
+    },
+    {
+        question: "The dominant generation in mosses is the:",
+        options: [
+            "Sporophyte",
+            "Gametophyte",
+            "Zygote",
+            "Embryo"
+        ],
+        answer: 1,
+        explanation: "In mosses, the gametophyte (haploid) generation is dominant and photosynthetic."
+    },
+    {
+        question: "Which of these is a characteristic of all fungi?",
+        options: [
+            "Autotrophic nutrition",
+            "Presence of chlorophyll",
+            "Cell walls made of chitin",
+            "Production of seeds"
+        ],
+        answer: 2,
+        explanation: "All fungi have cell walls containing chitin, unlike plants which have cellulose."
+    },
+    {
+        question: "In the life cycle of a fern, the prothallus represents the:",
+        options: [
+            "Sporophyte",
+            "Gametophyte",
+            "Zygote",
+            "Embryo"
+        ],
+        answer: 1,
+        explanation: "The prothallus is the heart-shaped gametophyte generation in ferns."
+    },
+    {
+        question: "Which pigment is NOT found in algae?",
+        options: [
+            "Chlorophyll a",
+            "Fucoxanthin",
+            "Phycoerythrin",
+            "Melanin"
+        ],
+        answer: 3,
+        explanation: "Melanin is an animal pigment not found in algae."
+    },
+    {
+        question: "The fungal structure involved in nutrient absorption is the:",
+        options: [
+            "Rhizome",
+            "Hypha",
+            "Sorus",
+            "Frond"
+        ],
+        answer: 1,
+        explanation: "Hyphae are the thread-like structures that absorb nutrients in fungi."
+    },
+    {
+        question: "Which process occurs in both algae and ferns but not in fungi?",
+        options: [
+            "Photosynthesis",
+            "Spore formation",
+            "Binary fission",
+            "Decomposition"
+        ],
+        answer: 0,
+        explanation: "Only algae and ferns can photosynthesize as they contain chlorophyll."
+    },
+    {
+        question: "The fungal disease that affects cereal crops is:",
+        options: [
+            "Athlete's foot",
+            "Ringworm",
+            "Rust",
+            "Thrush"
+        ],
+        answer: 2,
+        explanation: "Rust fungi are parasitic on cereal crops like wheat and corn."
+    },
+    {
+        question: "Which of these is a bryophyte?",
+        options: [
+            "Spirogyra",
+            "Fern",
+            "Moss",
+            "Mushroom"
+        ],
+        answer: 2,
+        explanation: "Mosses are bryophytes - non-vascular plants."
+    },
+    {
+        question: "The symbiotic association between fungi and plant roots is called:",
+        options: [
+            "Lichen",
+            "Mycorrhiza",
+            "Parasitism",
+            "Saprophytism"
+        ],
+        answer: 1,
+        explanation: "Mycorrhizae are mutualistic associations between fungi and plant roots."
+    },
+    {
+        question: "Which of these is a product of the light-dependent reactions of photosynthesis?",
+        options: [
+            "Glucose",
+            "ATP",
+            "Carbon dioxide",
+            "Water"
+        ],
+        answer: 1,
+        explanation: "ATP and NADPH are produced in the light-dependent reactions."
+    },
+    {
+        question: "The study of fungi is called:",
+        options: [
+            "Phycology",
+            "Mycology",
+            "Bryology",
+            "Pteridology"
+        ],
+        answer: 1,
+        explanation: "Mycology is the branch of biology concerned with fungi."
+    },
+    {
+        question: "Which of these algae is unicellular?",
+        options: [
+            "Spirogyra",
+            "Volvox",
+            "Chlamydomonas",
+            "Fucus"
+        ],
+        answer: 2,
+        explanation: "Chlamydomonas is a unicellular green alga."
+    },
+    {
+        question: "The main storage carbohydrate in fungi is:",
+        options: [
+            "Starch",
+            "Glycogen",
+            "Cellulose",
+            "Sucrose"
+        ],
+        answer: 1,
+        explanation: "Fungi store food as glycogen, similar to animals."
+    },
+    {
+        question: "Which of these is a pteridophyte?",
+        options: [
+            "Moss",
+            "Fern",
+            "Yeast",
+            "Seaweed"
+        ],
+        answer: 1,
+        explanation: "Ferns are pteridophytes - vascular plants that reproduce via spores."
+    },
+    {
+        question: "The fungal structure that produces spores is called a:",
+        options: [
+            "Sorus",
+            "Sporangium",
+            "Rhizoid",
+            "Prothallus"
+        ],
+        answer: 1,
+        explanation: "Sporangia are structures that produce and contain spores in fungi."
+    },
+    {
+        question: "Which of these is NOT a fungal disease?",
+        options: [
+            "Blight",
+            "Ringworm",
+            "Malaria",
+            "Thrush"
+        ],
+        answer: 2,
+        explanation: "Malaria is caused by a protozoan (Plasmodium), not a fungus."
+    },
+    {
+        question: "The pigment responsible for the red color in red algae is:",
+        options: [
+            "Chlorophyll",
+            "Phycoerythrin",
+            "Fucoxanthin",
+            "Carotene"
+        ],
+        answer: 1,
+        explanation: "Phycoerythrin gives red algae their characteristic color."
+    }
+];
+
+        let currentQuestion = 0;
+        let score = 0;
+
+        // Display question immediately
+        function showQuestion() {
+            const q = questions[currentQuestion];
+            document.getElementById('question').textContent = `${currentQuestion + 1}. ${q.question}`;
+            
+            const optionsDiv = document.getElementById('options');
+            optionsDiv.innerHTML = '';
+            
+            q.options.forEach((option, index) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'option';
+                optionDiv.textContent = option;
+                optionDiv.onclick = () => checkAnswer(index);
+                optionsDiv.appendChild(optionDiv);
+            });
+            
+            document.getElementById('prev-btn').disabled = currentQuestion === 0;
+            document.getElementById('next-btn').textContent = 
+                currentQuestion === questions.length - 1 ? 'Finish' : 'Next';
+        }
+
+        function checkAnswer(selectedIndex) {
+            const q = questions[currentQuestion];
+            const options = document.querySelectorAll('.option');
+            
+            options.forEach((opt, index) => {
+                if (index === q.answer) {
+                    opt.classList.add('correct');
+                } else if (index === selectedIndex && index !== q.answer) {
+                    opt.classList.add('incorrect');
+                }
+                opt.onclick = null; // Disable further clicks
+            });
+            
+            if (selectedIndex === q.answer) score++;
+            
+            document.getElementById('explanation').textContent = q.explanation;
+        }
+
+        // Initialize quiz
+        document.addEventListener('DOMContentLoaded', () => {
+            showQuestion();
+            
+            document.getElementById('next-btn').addEventListener('click', () => {
+                if (currentQuestion < questions.length - 1) {
+                    currentQuestion++;
+                    showQuestion();
+                } else {
+                    alert(`Quiz completed! Score: ${score}/${questions.length}`);
+                }
+            });
+            
+            document.getElementById('prev-btn').addEventListener('click', () => {
+                if (currentQuestion > 0) {
+                    currentQuestion--;
+                    showQuestion();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
